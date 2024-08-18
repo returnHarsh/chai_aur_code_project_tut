@@ -51,7 +51,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 
-// again creating a custom method
+// again creating a custom method for generating the access token
 userSchema.methods.generateAccessToken = async function () {
    return jwt.sign({
         _id: this._id,
@@ -84,7 +84,7 @@ userSchema.methods.generateRefreshToken = async function () {
 // this will run everytime just before the data is going to save
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
-    this.password = bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
     next();
 })
 
